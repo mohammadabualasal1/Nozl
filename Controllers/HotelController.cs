@@ -84,7 +84,63 @@ namespace Nozl.Controllers
             await _dbContext.SaveChangesAsync();
              return Ok(hotel);
 
+        }
+
+        [HttpPut("UpdateHotelInfo")]
+        [Authorize(Roles ="HotelOwner")]
+        public async Task<IActionResult> UpdateHotelInfo (long id, UpdateHotelInfoDto dto)
+        {
+            var UserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var UserId = int.Parse(UserIdString);
+
+            var hotel = await _dbContext.Hotels.FirstOrDefaultAsync(h => h.Id == id);
+            if (hotel == null)
+            {
+                return NotFound();
+            }
+            hotel.Name=dto.Name;
+            hotel.Status = dto.Status;
+            hotel.Description = dto.Description;
+            hotel.Phone = dto.Phone;
+            hotel.ImageUrl = dto.ImageUrl;
+
+
+            await _dbContext.SaveChangesAsync();
+            return Ok(hotel);
+        }
+
+        [HttpPut("HotelStatus")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> HotelStatus(long id, StatusHotelDto dto)
+        {
+            var UserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var UserId = int.Parse(UserIdString);
+
+            var hotel = await _dbContext.Hotels.FirstOrDefaultAsync(h => h.Id == id);
+            if (hotel == null)
+            {
+                return NotFound();
+            }
+
+            hotel.Status = dto.Status;
+            await _dbContext.SaveChangesAsync();
+            return Ok(hotel);
+        }
+
+        [HttpPut("DeleteHotel")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteHotel(long id)
+        {
+            var UserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var UserId = int.Parse(UserIdString);
+
+            var hotel = await _dbContext.Hotels.FirstOrDefaultAsync(h => h.Id == id);
+            if (hotel == null) { return NotFound(); }
+
+            _dbContext.Hotels.Remove(hotel);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
 
         }
-     }
-}
+    }
