@@ -16,7 +16,7 @@ namespace Nozl.Model
 
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
-        public int TotalPrice { get; set; }
+        public long TotalPrice { get; set; }
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }

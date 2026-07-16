@@ -2,6 +2,6 @@
 {
     public class StatusHotelDto
     {
-        public string Status { get; set; }
+        public string? Status { get; set; }
     }
 }

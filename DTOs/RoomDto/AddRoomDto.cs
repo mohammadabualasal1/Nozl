@@ -1,16 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Nozl.Model;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Nozl.Model
+namespace Nozl.DTOs.RoomDto
 {
-    public class Room
+    public class AddRoomDto
     {
-        public long Id { get; set; }
-
-        [ForeignKey("Hotel")]
         public long HotelId { get; set; }
-        public Hotel? Hotel { get; set; }
         public string RoomNumber { get; set; }
-        public string Type { get; set; } 
+        public string Type { get; set; }
         public long PricePerNight { get; set; }
         public long Capacity { get; set; }
         public string ImageUrl { get; set; }

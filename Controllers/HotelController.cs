@@ -20,7 +20,7 @@ namespace Nozl.Controllers
             }
 
         [HttpGet("GetAllHotels")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllHotels()
         {
             var UserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -127,7 +127,7 @@ namespace Nozl.Controllers
             return Ok(hotel);
         }
 
-        [HttpPut("DeleteHotel")]
+        [HttpDelete("DeleteHotel")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteHotel(long id)
         {
