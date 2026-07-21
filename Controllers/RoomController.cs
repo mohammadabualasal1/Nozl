@@ -45,17 +45,20 @@ namespace Nozl.Controllers
         }
 
         [HttpGet("GetAvailableRooms")]
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> GetAvailableRooms(DateTime checkIn, DateTime checkOut)
         {
+            checkIn = DateTime.SpecifyKind(checkIn, DateTimeKind.Utc);
+            checkOut = DateTime.SpecifyKind(checkOut, DateTimeKind.Utc);
+
             var UserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var UserId = int.Parse(UserIdString);
 
             var room = await (from r in _dbContext.Rooms
-                              where _dbContext.Bookings.All(b =>
-                                  b.RoomId != r.Id ||
-                                  b.CheckOut <= checkIn ||
-                                  b.CheckIn >= checkOut)
+                              where !_dbContext.Bookings.Any(b =>
+                                  b.RoomId == r.Id &&
+                                  b.CheckIn > checkOut &&
+                                   b.CheckOut < checkIn )
                               select new
                               {
                                   r.RoomNumber,
@@ -85,7 +88,7 @@ namespace Nozl.Controllers
                 PricePerNight = dto.PricePerNight,
                 Capacity = dto.Capacity,
                 ImageUrl = dto.ImageUrl,
-IsAvailable = dto.IsAvailable
+                IsAvailable = dto.IsAvailable
 
             };
 
