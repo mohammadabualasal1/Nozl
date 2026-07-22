@@ -122,15 +122,16 @@ namespace Nozl.Controllers
         }
         [HttpDelete("DeleteRoom")]
         [Authorize(Roles = "HotelOwner")]
-        public async Task<IActionResult> DeleteRoom(long id)
+        public async Task<IActionResult> DeleteRoom(DeleteRoomDto dto)
         {
             var UserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var UserId = int.Parse(UserIdString);
 
-            var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Id == id);
+            var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Id == dto.Id);
             if (room == null) { return NotFound(); }
 
-            _dbContext.Rooms.Remove(room);
+            room.IsAvailable = false;
+            
             await _dbContext.SaveChangesAsync();
             return NoContent();
 
